@@ -66,6 +66,7 @@ public class DbOrderChunkJobConfig {
                 .sql("SELECT order_id, customer_name, status_code, amount FROM TB_ORDER ORDER BY order_id")
                 .rowMapper(new BeanPropertyRowMapper<DbOrder>(DbOrder.class))
                 .build();
+        
         return reader;
     }
 
@@ -78,6 +79,8 @@ public class DbOrderChunkJobConfig {
                         + "WHERE order_id = :orderId")
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .build();
+        statusUpdateWriter.afterPropertiesSet(); // ItemPreparedStatementSetter 초기화 NullPoint 방지
+        
 
         JdbcBatchItemWriter<DbOrder> historyInsertWriter = new JdbcBatchItemWriterBuilder<DbOrder>()
                 .dataSource(dataSource)
@@ -85,6 +88,7 @@ public class DbOrderChunkJobConfig {
                         + "VALUES (:orderId, :prevStatusCode, :statusCode)")
                 .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
                 .build();
+        historyInsertWriter.afterPropertiesSet(); // ItemPreparedStatementSetter 초기화 NullPoint 방지
 
         List<ItemWriter<? super DbOrder>> delegates = new ArrayList<ItemWriter<? super DbOrder>>();
         delegates.add(statusUpdateWriter);
@@ -95,4 +99,5 @@ public class DbOrderChunkJobConfig {
                 .build();
         return writer;
     }
+    
 }

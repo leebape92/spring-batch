@@ -1,8 +1,0 @@
-spring:
-  batch:
-    job:
-      # 실행할 Job 이름. 실행 시 --job.name=dbOrderChunkJob 처럼 바꿀 수 있음
-      name: ${job.name:fileOrderTaskletJob}
-    jdbc:
-      # 임베디드 DB(H2)에는 배치 메타 테이블 자동 생성
-      initialize-schema: embedded

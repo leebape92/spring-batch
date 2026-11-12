@@ -30,16 +30,13 @@ import com.example.batch.OrderTestData;
  * 읽기 10건 -> 변경 대상 7건만 쓰기, 나머지 3건은 Processor 에서 걸러진다(filter).
  */
 @SpringBatchTest
-@SpringBootTest(classes = DbOrderChunkJobConfigTest.TestConfig.class, properties = {
-		
-		//MySql 연동
-        "spring.batch.job.enabled=false", //테스트가 뜰 때 스프링 배치가 자동으로 Job을 실행해 버리는 것을 막음
-        "spring.profiles.active=mysql"
-        
-//        "spring.sql.init.mode=always", // 
-//        "spring.sql.init.schema-locations=classpath:db/h2/schema.sql",
-//        "spring.sql.init.encoding=UTF-8"
-})
+@SpringBootTest(
+		classes = DbOrderChunkJobConfigTest.TestConfig.class, 
+		properties = {
+		"spring.batch.job.enabled=false", //테스트가 뜰 때 스프링 배치가 자동으로 Job을 실행해 버리는 것을 막음
+        "spring.profiles.active=mysql" // application 설정파일 mysql 읽기
+		}
+)
 class DbOrderChunkJobConfigTest {
 
     @Configuration
@@ -62,8 +59,8 @@ class DbOrderChunkJobConfigTest {
     void setUp() {
     	
     	ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-    	        new ClassPathResource("db/mysql/schema.sql"),      // 1. 테이블 생성 스크립트 먼저 실행
-    	        new ClassPathResource("db/mysql/sample-data.sql")     // 2. 그 후 데이터 초기화 스크립트 실행
+    	        new ClassPathResource("db/schema.sql"),      // 1. 테이블 생성 스크립트 먼저 실행
+    	        new ClassPathResource("db/sample-data.sql")     // 2. 그 후 데이터 초기화 스크립트 실행
     	    );
         populator.setSqlScriptEncoding("UTF-8");
         populator.execute(dataSource);

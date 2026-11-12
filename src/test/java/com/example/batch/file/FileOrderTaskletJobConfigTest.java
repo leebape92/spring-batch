@@ -30,8 +30,10 @@ import com.example.batch.OrderTestData;
  * Job 이 여러 개라 JobLauncherTestUtils 가 Job 을 고르지 못하므로, 이 테스트에서는 해당 Job 설정만 올린다.
  */
 @SpringBatchTest
-@SpringBootTest(classes = FileOrderTaskletJobConfigTest.TestConfig.class,
-        properties = "spring.batch.job.enabled=false")
+@SpringBootTest(
+		classes = FileOrderTaskletJobConfigTest.TestConfig.class, 
+		properties = "spring.batch.job.enabled=false"
+)
 class FileOrderTaskletJobConfigTest {
 
     @Configuration

@@ -1,8 +1,5 @@
 package com.example.batch.common;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 주문 상태코드 변경 규칙 (파일 배치 / DB 배치가 함께 사용).
  *

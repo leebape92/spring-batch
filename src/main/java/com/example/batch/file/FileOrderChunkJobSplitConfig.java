@@ -20,41 +20,31 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-/**
- * [파일 / Chunk + 파일 분리] Job: fileOrderSplitJob
- * MultiResourceItemWriter 가 "파일당 N건" 기준으로 order-1.csv, order-2.csv ... 를 만든다.
- *
- * 주의: 파일 분리는 chunk 를 통째로 쓴 "뒤"에 판단한다. (chunk 중간에서 자르지 않음)
- *       그래서 파일당 건수는 CHUNK_SIZE 와 같거나 그 배수로 맞추는 것이 좋다.
- *
- * 10건 / chunk 2건 / 파일당 4건 -> order-1.csv(4건), order-2.csv(4건), order-3.csv(2건)
- */
+
 @Configuration
-public class FileOrderSplitJobConfig {
+public class FileOrderChunkJobSplitConfig {
 
     public static final String BASE_PATH = "build/output/order-split/order";
 
     private static final int CHUNK_SIZE = 2;
     private static final int ITEMS_PER_FILE = 4;
     
-    
-    // @Qualifier("fileOrderSplitStep")Step fileOrderSplitStep 스텝 메서드명 지정
     @Bean
-    public Job fileOrderSplitJob(JobRepository jobRepository, @Qualifier("fileOrderSplitStep")Step fileOrderSplitStep) {
-        Job job = new JobBuilder("fileOrderSplitJob", jobRepository)
+    public Job fileOrderChunkSplitJob(JobRepository jobRepository, @Qualifier("fileOrderChunkSplitStep")Step fileOrderChunkSplitStep) {
+        Job job = new JobBuilder("fileOrderChunkSplitJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(fileOrderSplitStep)
+                .start(fileOrderChunkSplitStep)
                 .build();
         return job;
     }
     
     // 
     @Bean
-    public Step fileOrderSplitStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, @Qualifier("fileOrderSplitReader") FlatFileItemReader<FileOrder> fileOrderSplitReader,
+    public Step fileOrderChunkSplitStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, @Qualifier("fileOrderReader") FlatFileItemReader<FileOrder> fileOrderReader,
                                    FileOrderProcessor fileOrderProcessor, MultiResourceItemWriter<FileOrder> fileOrderSplitWriter) {
-        Step step = new StepBuilder("fileOrderSplitStep", jobRepository)
+        Step step = new StepBuilder("fileOrderChunkSplitStep", jobRepository)
                 .<FileOrder, FileOrder>chunk(CHUNK_SIZE, transactionManager)
-                .reader(fileOrderSplitReader)
+                .reader(fileOrderReader)
                 .processor(fileOrderProcessor)
                 .writer(fileOrderSplitWriter)
                 .build();
@@ -62,7 +52,7 @@ public class FileOrderSplitJobConfig {
     }
 
     @Bean
-    public FlatFileItemReader<FileOrder> fileOrderSplitReader() {
+    public FlatFileItemReader<FileOrder> fileOrderReader() {
         FlatFileItemReader<FileOrder> reader = new FlatFileItemReaderBuilder<FileOrder>()
                 .name("fileOrderSplitReader")
                 .resource(new ClassPathResource("input/orders.csv"))

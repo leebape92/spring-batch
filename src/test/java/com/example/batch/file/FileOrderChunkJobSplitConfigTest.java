@@ -25,12 +25,15 @@ import com.example.batch.OrderTestData;
 
 /** [파일 / Chunk + 파일 분리] 10건 / chunk 2건 / 파일당 4건 -> 파일 3개 (4건, 4건, 2건) */
 @SpringBatchTest
-@SpringBootTest(classes = FileOrderSplitJobConfigTest.TestConfig.class, properties = "spring.batch.job.enabled=false")
-class FileOrderSplitJobConfigTest {
+@SpringBootTest(
+		classes = FileOrderChunkJobSplitConfigTest.TestConfig.class, 
+		properties = "spring.batch.job.enabled=false"
+)
+class FileOrderChunkJobSplitConfigTest {
 
     @Configuration
     @EnableAutoConfiguration
-    @Import({FileOrderSplitJobConfig.class, FileOrderProcessor.class})
+    @Import({FileOrderChunkJobSplitConfig.class, FileOrderProcessor.class})
     static class TestConfig {
     }
 
@@ -59,7 +62,7 @@ class FileOrderSplitJobConfigTest {
     }
     
     private Path splitPath(int index) {
-        Path path = Paths.get(FileOrderSplitJobConfig.BASE_PATH + "-" + index + ".csv");
+        Path path = Paths.get(FileOrderChunkJobSplitConfig.BASE_PATH + "-" + index + ".csv");
         return path;
     }
 

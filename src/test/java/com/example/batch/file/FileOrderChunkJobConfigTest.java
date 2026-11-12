@@ -27,7 +27,9 @@ import com.example.batch.OrderTestData;
 
 /** [파일 / Chunk] Job 통합 테스트 (Reader -> Processor -> Writer 전체 흐름) */
 @SpringBatchTest
-@SpringBootTest(classes = FileOrderChunkJobConfigTest.TestConfig.class, properties = "spring.batch.job.enabled=false")
+@SpringBootTest(classes = FileOrderChunkJobConfigTest.TestConfig.class, properties = 
+	"spring.batch.job.enabled=false"
+)
 class FileOrderChunkJobConfigTest {
 
     @Configuration

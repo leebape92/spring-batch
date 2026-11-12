@@ -29,11 +29,13 @@ import com.example.batch.OrderTestData;
  * [DB / Tasklet] Job 통합 테스트.
  */
 @SpringBatchTest
-@SpringBootTest(classes = DbOrderTaskletJobConfigTest.TestConfig.class, properties = {
-		//MySql 연동
-        "spring.batch.job.enabled=false", //테스트가 뜰 때 스프링 배치가 자동으로 Job을 실행해 버리는 것을 막음
-        "spring.profiles.active=mysql"
-})
+@SpringBootTest(
+		classes = DbOrderTaskletJobConfigTest.TestConfig.class, 
+		properties = {
+	        "spring.batch.job.enabled=false", //테스트가 뜰 때 스프링 배치가 자동으로 Job을 실행해 버리는 것을 막음
+	        "spring.profiles.active=mysql"
+		}
+)
 class DbOrderTaskletJobConfigTest {
 
     @Configuration
@@ -55,8 +57,8 @@ class DbOrderTaskletJobConfigTest {
     void setUp() {
     	
     	ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-    	        new ClassPathResource("db/mysql/schema.sql"),      // 1. 테이블 생성 스크립트 먼저 실행
-    	        new ClassPathResource("db/mysql/sample-data.sql")     // 2. 그 후 데이터 초기화 스크립트 실행
+    	        new ClassPathResource("db/schema.sql"),      // 1. 테이블 생성 스크립트 먼저 실행
+    	        new ClassPathResource("db/sample-data.sql")     // 2. 그 후 데이터 초기화 스크립트 실행
     	    );
         populator.setSqlScriptEncoding("UTF-8");
         populator.execute(dataSource);
