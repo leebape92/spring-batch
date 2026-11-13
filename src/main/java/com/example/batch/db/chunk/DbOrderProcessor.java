@@ -1,4 +1,4 @@
-package com.example.batch.db;
+package com.example.batch.db.chunk;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,6 +6,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 import com.example.batch.common.OrderStatusRule;
+import com.example.batch.db.DbOrder;
 
 /**
  * DB 배치의 Processor: 상태코드를 다음 단계로 변경한다.

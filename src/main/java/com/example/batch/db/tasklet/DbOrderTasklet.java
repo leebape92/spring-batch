@@ -1,4 +1,4 @@
-package com.example.batch.db;
+package com.example.batch.db.tasklet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

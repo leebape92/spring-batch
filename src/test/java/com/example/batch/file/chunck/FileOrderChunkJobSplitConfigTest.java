@@ -1,4 +1,4 @@
-package com.example.batch.file;
+package com.example.batch.file.chunck;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,6 +22,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.example.batch.OrderTestData;
+import com.example.batch.file.chunk.FileOrderChunkJobSplitConfig;
+import com.example.batch.file.chunk.FileOrderProcessor;
 
 /** [파일 / Chunk + 파일 분리] 10건 / chunk 2건 / 파일당 4건 -> 파일 3개 (4건, 4건, 2건) */
 @SpringBatchTest

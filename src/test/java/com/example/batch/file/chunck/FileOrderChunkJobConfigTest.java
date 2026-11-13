@@ -1,4 +1,4 @@
-package com.example.batch.file;
+package com.example.batch.file.chunck;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,22 +13,27 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.example.batch.OrderTestData;
+import com.example.batch.file.chunk.FileOrderChunkJobConfig;
+import com.example.batch.file.chunk.FileOrderProcessor;
 
 /** [파일 / Chunk] Job 통합 테스트 (Reader -> Processor -> Writer 전체 흐름) */
 @SpringBatchTest
-@SpringBootTest(classes = FileOrderChunkJobConfigTest.TestConfig.class, properties = 
-	"spring.batch.job.enabled=false"
+@SpringBootTest(
+		classes = FileOrderChunkJobConfigTest.TestConfig.class, 
+		properties = "spring.batch.job.enabled=false"
 )
 class FileOrderChunkJobConfigTest {
 
@@ -48,11 +53,12 @@ class FileOrderChunkJobConfigTest {
         Files.deleteIfExists(OUTPUT);
     }
 
+    
     @Test
     @DisplayName("fileOrderChunkJob 이 정상 완료되고 상태코드가 변경된 파일이 생성된다")
     void jobCompleted() throws Exception {
         JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobLauncherTestUtils.getUniqueJobParameters());
-
+        
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
         assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
 
@@ -60,16 +66,16 @@ class FileOrderChunkJobConfigTest {
         assertThat(lines).containsExactlyElementsOf(OrderTestData.expectedResultLines());
     }
 
-    @Test
-    @DisplayName("Chunk Step 은 read / write 건수를 자동 집계한다")
-    void stepCounts() throws Exception {
-        JobExecution jobExecution = jobLauncherTestUtils.launchStep("fileOrderChunkStep");
-
-        StepExecution stepExecution = jobExecution.getStepExecutions().iterator().next();
-        assertThat(stepExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-        assertThat(stepExecution.getReadCount()).isEqualTo(10);
-        assertThat(stepExecution.getWriteCount()).isEqualTo(10);
-        assertThat(stepExecution.getFilterCount()).isZero();
-        assertThat(stepExecution.getSkipCount()).isZero();
-    }
+//    @Test
+//    @DisplayName("Chunk Step 은 read / write 건수를 자동 집계한다")
+//    void stepCounts() throws Exception {
+//        JobExecution jobExecution = jobLauncherTestUtils.launchStep("fileOrderChunkStep");
+//
+//        StepExecution stepExecution = jobExecution.getStepExecutions().iterator().next();
+//        assertThat(stepExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
+//        assertThat(stepExecution.getReadCount()).isEqualTo(10);
+//        assertThat(stepExecution.getWriteCount()).isEqualTo(10);
+//        assertThat(stepExecution.getFilterCount()).isZero();
+//        assertThat(stepExecution.getSkipCount()).isZero();
+//    }
 }

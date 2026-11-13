@@ -1,4 +1,4 @@
-package com.example.batch.file;
+package com.example.batch.file.chunk;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -19,6 +19,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import com.example.batch.file.FileOrder;
 
 
 @Configuration

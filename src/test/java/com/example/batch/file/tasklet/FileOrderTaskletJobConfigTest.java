@@ -1,4 +1,4 @@
-package com.example.batch.file;
+package com.example.batch.file.tasklet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,6 +25,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.example.batch.OrderTestData;
+import com.example.batch.file.tasklet.FileOrderTasklet;
+import com.example.batch.file.tasklet.FileOrderTaskletJobConfig;
 
 /**
  * [파일 / Tasklet] Job 통합 테스트.
@@ -67,7 +69,8 @@ class FileOrderTaskletJobConfigTest {
     	// JobLauncherTestUtils.launchJob()
     	// 현재 컨테이너에 Job 빈이 오직 1개만 존재하면 별도의 이름 지정 없이도 Job을 자동으로 선택
     	// FileOrderTaskletJobConfig 클래스에서 지정한 fileOrderTaskletJob 선택
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobLauncherTestUtils.getUniqueJobParameters());
+        
+    	JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobLauncherTestUtils.getUniqueJobParameters());
 
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
         assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);

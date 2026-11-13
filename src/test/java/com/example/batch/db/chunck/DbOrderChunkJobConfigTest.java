@@ -1,4 +1,4 @@
-package com.example.batch.db;
+package com.example.batch.db.chunck;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,6 +24,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import com.example.batch.OrderTestData;
+import com.example.batch.db.chunk.DbOrderChunkJobConfig;
+import com.example.batch.db.chunk.DbOrderProcessor;
 
 /**
  * [DB / Chunk] Job 통합 테스트 (H2 인메모리 DB 사용).

@@ -1,4 +1,4 @@
-package com.example.batch.db;
+package com.example.batch.db.tasklet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,6 +24,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import com.example.batch.OrderTestData;
+import com.example.batch.db.tasklet.DbOrderTasklet;
+import com.example.batch.db.tasklet.DbOrderTaskletJobConfig;
 
 /**
  * [DB / Tasklet] Job 통합 테스트.

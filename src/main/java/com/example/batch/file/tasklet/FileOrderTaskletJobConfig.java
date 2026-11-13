@@ -1,4 +1,4 @@
-package com.example.batch.db;
+package com.example.batch.file.tasklet;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -11,23 +11,23 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-/** [DB / Tasklet] Job: dbOrderTaskletJob */
+/** [파일 / Tasklet] Job: fileOrderTaskletJob */
 @Configuration
-public class DbOrderTaskletJobConfig {
+public class FileOrderTaskletJobConfig {
 
     @Bean
-    public Job dbOrderTaskletJob(JobRepository jobRepository, @Qualifier("dbOrderTaskletStep") Step dbOrderTaskletStep) {
-        Job job = new JobBuilder("dbOrderTaskletJob", jobRepository)
+    public Job fileOrderTaskletJob(JobRepository jobRepository, @Qualifier("fileOrderTaskletStep") Step fileOrderTaskletStep) {
+        Job job = new JobBuilder("fileOrderTaskletJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(dbOrderTaskletStep)
+                .start(fileOrderTaskletStep) // Step fileOrderTaskletStep 메서드 실행 -> FileOrderTasklet 실행
                 .build();
         return job;
     }
 
     @Bean
-    public Step dbOrderTaskletStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, DbOrderTasklet dbOrderTasklet) {
-        Step step = new StepBuilder("dbOrderTaskletStep", jobRepository)
-                .tasklet(dbOrderTasklet, transactionManager)
+    public Step fileOrderTaskletStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, FileOrderTasklet fileOrderTasklet) {
+        Step step = new StepBuilder("fileOrderTaskletStep", jobRepository)
+                .tasklet(fileOrderTasklet, transactionManager)
                 .build();
         return step;
     }
