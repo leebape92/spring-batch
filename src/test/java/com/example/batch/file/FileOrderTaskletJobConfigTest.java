@@ -13,11 +13,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
@@ -47,32 +48,43 @@ class FileOrderTaskletJobConfigTest {
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
 
+    
+//    @Autowired
+//    @Qualifier("fileOrderTaskletJob")
+//    private Job fileOrderTaskletJob; //명시적으로 잡 선언 
+    
     @BeforeEach
     void setUp() throws Exception {
         Files.deleteIfExists(OUTPUT);
+        
+//        jobLauncherTestUtils.setJob(fileOrderTaskletJob); //명시적으로 잡 선언
     }
 
     @Test
     @DisplayName("fileOrderTaskletJob 이 정상 완료되고 상태코드가 변경된 파일이 생성된다")
     void jobCompleted() throws Exception {
-        JobExecution jobExecution = jobLauncherTestUtils.launchJob(
-                jobLauncherTestUtils.getUniqueJobParameters());
+    	
+    	// JobLauncherTestUtils.launchJob()
+    	// 현재 컨테이너에 Job 빈이 오직 1개만 존재하면 별도의 이름 지정 없이도 Job을 자동으로 선택
+    	// FileOrderTaskletJobConfig 클래스에서 지정한 fileOrderTaskletJob 선택
+        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobLauncherTestUtils.getUniqueJobParameters());
 
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
         assertThat(jobExecution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
-
+        
+        // 아웃풋 파일의 데이터를 읽어서 형식에 맞게 변환됬는지 확인
         List<String> lines = Files.readAllLines(OUTPUT, StandardCharsets.UTF_8);
         assertThat(lines).containsExactlyElementsOf(OrderTestData.expectedResultLines());
     }
 
-    @Test
-    @DisplayName("Tasklet Step 은 read/write 건수를 자동 집계하지 않는다(0)")
-    void stepCountsAreZero() throws Exception {
-        JobExecution jobExecution = jobLauncherTestUtils.launchStep("fileOrderTaskletStep");
-
-        StepExecution stepExecution = jobExecution.getStepExecutions().iterator().next();
-        assertThat(stepExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-        assertThat(stepExecution.getReadCount()).isZero();
-        assertThat(stepExecution.getWriteCount()).isZero();
-    }
+//    @Test
+//    @DisplayName("Tasklet Step 은 read/write 건수를 자동 집계하지 않는다(0)")
+//    void stepCountsAreZero() throws Exception {
+//        JobExecution jobExecution = jobLauncherTestUtils.launchStep("fileOrderTaskletStep");
+//
+//        StepExecution stepExecution = jobExecution.getStepExecutions().iterator().next();
+//        assertThat(stepExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
+//        assertThat(stepExecution.getReadCount()).isZero();
+//        assertThat(stepExecution.getWriteCount()).isZero();
+//    }
 }

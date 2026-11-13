@@ -32,7 +32,7 @@ public class FileOrderChunkJobConfig {
     public Job fileOrderChunkJob(JobRepository jobRepository, @Qualifier("fileOrderChunkStep") Step fileOrderChunkStep) {
         Job job = new JobBuilder("fileOrderChunkJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(fileOrderChunkStep)
+                .start(fileOrderChunkStep) // Step fileOrderChunkStep 메서드 실행 -> FlatFileItemReader<FileOrder> fileOrderReader, FileOrderProcessor fileOrderProcessor, FlatFileItemWriter<FileOrder> fileOrderWriter 준비
                 .build();
         return job;
     }

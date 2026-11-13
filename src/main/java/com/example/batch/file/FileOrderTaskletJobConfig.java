@@ -19,7 +19,7 @@ public class FileOrderTaskletJobConfig {
     public Job fileOrderTaskletJob(JobRepository jobRepository, @Qualifier("fileOrderTaskletStep") Step fileOrderTaskletStep) {
         Job job = new JobBuilder("fileOrderTaskletJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .start(fileOrderTaskletStep)
+                .start(fileOrderTaskletStep) // Step fileOrderTaskletStep 메서드 실행 -> FileOrderTasklet 실행
                 .build();
         return job;
     }

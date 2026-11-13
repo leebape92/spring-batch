@@ -63,18 +63,23 @@ public class FileOrderChunkJobSplitConfig {
                 .build();
         return reader;
     }
-
+    
+    
+    // MultiResourceItemWriter 관리자
+    // FlatFileItemWriter 실무자
     @Bean
     public MultiResourceItemWriter<FileOrder> fileOrderSplitWriter() {
         // 실제 쓰기를 담당하는 Writer (resource 는 MultiResourceItemWriter 가 파일마다 지정해 준다)
-        FlatFileItemWriter<FileOrder> delegate = new FlatFileItemWriterBuilder<FileOrder>()
+        FlatFileItemWriter<FileOrder> fileOrderSplitDelegateWriter = new FlatFileItemWriterBuilder<FileOrder>()
                 .name("fileOrderSplitDelegateWriter")
                 .delimited()
                 .delimiter(",")
                 .names(new String[] {"orderId", "customerName", "statusCode", "amount"})
                 .build();
 
-        // 파일명 뒤에 붙는 접미사: order + "-1.csv"
+        // ResourceSuffixCreato -> MultiResourceItemWriter 여러 개의 출력 파일을   
+        // 분할 생성할 때 각 파일 이름 뒤에 접미사: order + "-1.csv" 붙는 형태
+        // MultiResourceItemWriter 내부의 resourceIndex 필드가 ++ 됨
         ResourceSuffixCreator suffixCreator = new ResourceSuffixCreator() {
             @Override
             public String getSuffix(int index) {
@@ -86,9 +91,9 @@ public class FileOrderChunkJobSplitConfig {
         MultiResourceItemWriter<FileOrder> writer = new MultiResourceItemWriterBuilder<FileOrder>()
                 .name("fileOrderSplitWriter")
                 .resource(new FileSystemResource(BASE_PATH))
-                .itemCountLimitPerResource(ITEMS_PER_FILE)
+                .itemCountLimitPerResource(ITEMS_PER_FILE) // 갯수만큼 파일을 넣으면 파일을 닫음 이후 ResourceSuffixCreator 작동하여 파일명 채번 
                 .resourceSuffixCreator(suffixCreator)
-                .delegate(delegate)
+                .delegate(fileOrderSplitDelegateWriter)
                 .build();
         return writer;
     }

@@ -40,6 +40,9 @@ public class DbOrderTasklet implements Tasklet {
 
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    	// 호출하여 해당되는 쿼리 결과문을 일괄로 처리
+    	// jdbcTemplate.update() 데이터 변경이 있으면 update -> insert, update, delete
+    	// select = jdbcTemplate.query(), jdbcTemplate.queryForList()
         int historyCount = jdbcTemplate.update(INSERT_HISTORY_SQL);
         int updatedCount = jdbcTemplate.update(UPDATE_STATUS_SQL);
         log.info("[DB Tasklet] 이력 {} 건 저장, 주문 {} 건 상태 변경", historyCount, updatedCount);

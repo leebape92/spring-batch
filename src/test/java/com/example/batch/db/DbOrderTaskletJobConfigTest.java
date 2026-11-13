@@ -70,7 +70,9 @@ class DbOrderTaskletJobConfigTest {
         JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobLauncherTestUtils.getUniqueJobParameters());
 
         assertThat(jobExecution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-
+        
+        
+        // jdbcTemplate.query(sql, rowMapper) -> DTO로 받아옴
         List<String> statuses = jdbcTemplate.queryForList("SELECT status_code FROM TB_ORDER ORDER BY order_id", String.class);
         System.out.println("statuses:::" + statuses);
         assertThat(statuses).containsExactlyElementsOf(OrderTestData.expectedStatuses());
