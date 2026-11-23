@@ -9,7 +9,7 @@ Spring Batch를 처음 구현해보며 **개념 위주로** 정리한 학습용 
 | 구분 | 내용 |
 |------|------|
 | Language | Java 17 |
-| Framework | Spring Boot 3.2.5, Spring Batch |
+| Framework | Spring Boot 3.x, Spring Batch |
 | Build | Gradle |
 | DB | MySQL (`mysql` 프로파일) |
 | Test | JUnit5, AssertJ, spring-batch-test (`@SpringBatchTest`) |
